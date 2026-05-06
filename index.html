@@ -267,15 +267,26 @@ function RewardedShow(rewardId) {
             }
         }
 
-        // 
+        // Aggressively block all ad attempts
         window.addEventListener("unhandledrejection", function(event) {
             console.warn("Hata es geçildi:", event.reason);
             event.preventDefault();
         });
+
+        // Nuclear option: intercept and disable ALL ad-related messages
+        if (window.myGameInstance) {
+            const originalSendMessage = window.myGameInstance.SendMessage;
+            window.myGameInstance.SendMessage = function(obj, method, value) {
+                if (method && method.toString().toLowerCase().includes('ad')) {
+                    console.log('🚫 AD BLOCKED: ' + method);
+                    return;
+                }
+                return originalSendMessage.call(this, obj, method, value);
+            };
+        }
     </script>
-
-
-
+</body>
+</html>
 
 ]]&gt;</content>
 </moduleprefs></module>
